@@ -13,10 +13,7 @@ public class MinMidMax {
         System.out.print("c : ");
         int c = sc.nextInt();
         sc.close();
-
-        /*int min = Math.min(Math.min(a, b), c);
-        int max = Math.max(Math.max(a, b), c);
-        int mid = */
+        
         if (a < b) {
             if (b < c) {
                 System.out.println(a + " < " + b + " < " + c);
