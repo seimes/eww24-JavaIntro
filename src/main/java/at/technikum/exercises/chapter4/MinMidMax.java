@@ -13,7 +13,7 @@ public class MinMidMax {
         System.out.print("c : ");
         int c = sc.nextInt();
         sc.close();
-        
+
         if (a < b) {
             if (b < c) {
                 System.out.println(a + " < " + b + " < " + c);
