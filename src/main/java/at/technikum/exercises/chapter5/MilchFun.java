@@ -51,7 +51,7 @@ public class MilchFun {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Fettgehalt: ");
+        System.out.print("Fettgehalt: "); 
         double fat = sc.nextDouble();
         System.out.print("Haltbar: ");
         int longLife = 0;
