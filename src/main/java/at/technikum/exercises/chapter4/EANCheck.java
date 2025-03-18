@@ -9,10 +9,24 @@ public class EANCheck {
         long ean = sc.nextLong();
         sc.close();
 
+        System.out.println("EAN: " + ean);
+
         int even_sum = 0;
         int odd_sum = 0;
 
-        for (int i = 0; i < 12; i++) {
+        long eanTemp = ean;
+
+        int leadingZeros = 0;
+        for (int i = 0; i < 13; i++) {
+            if ((((eanTemp / 1000000) / 1000000)) !=  0) {
+                break;
+            } else {
+                eanTemp *= (int) Math.pow(10, i);
+                leadingZeros++;
+            }
+        }
+
+        for (int i = 12-leadingZeros+2; i > 0 ; i--) {
             if (i % 2 == 0) {
                 odd_sum += (int) ((ean % Math.pow(10, i+1)) / Math.pow(10, i));
             }
