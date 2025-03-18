@@ -47,5 +47,6 @@ public class Audio {
         meanN /= n;
 
         System.out.printf("Wert = %.2f", meanN);
+        sc.close();
     }
 }
