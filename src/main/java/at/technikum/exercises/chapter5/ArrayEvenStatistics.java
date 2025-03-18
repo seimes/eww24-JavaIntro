@@ -70,5 +70,6 @@ public class ArrayEvenStatistics {
         } else {
             System.out.println("no value entered");
         }
+        sc.close();
     }
 }
