@@ -11,11 +11,9 @@ public class Calendars {
             return -1;
         }
 
-        int[] daysInMonth;
+        int[] daysInMonth = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};;
         if (isLeap(year)) {
-            daysInMonth = new int[]{31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-        } else {
-            daysInMonth = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+            daysInMonth[1] = 29;
         }
 
         return daysInMonth[month - 1];
@@ -306,7 +304,7 @@ public class Calendars {
 
     public static void main(String[] args) {
         sc = new Scanner(System.in);
-        int day = 8, month = 10, year = 2000;
+        int day = 1, month = 1, year = 1970;
         while (true) {
 
             int op;
