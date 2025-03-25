@@ -29,6 +29,9 @@ public class Dog {
         Dog dog1 = new Dog("Max", "Cocker Spaniel");
         Dog dog2 = new Dog("Simba", "Dachshund");
 
+        System.out.println("name: " + dog1.getName() + ", breed: " + dog1.getBreed());
+        System.out.println("name: " + dog2.getName() + ", breed: " + dog2.getBreed());
+
         dog1.setBreed("Golden Retriever");
         dog2.setBreed("Frenchie");
         dog1.setName("Maxi");
