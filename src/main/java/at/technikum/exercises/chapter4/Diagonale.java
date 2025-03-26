@@ -10,7 +10,7 @@ public class Diagonale {
         do {
             System.out.print(": ");
             width = input.nextInt();
-        } while (width % 2 == 0);
+        } while (width % 2 == 0 || width < 1);
 
         input.close();
 
