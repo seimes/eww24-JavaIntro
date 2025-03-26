@@ -16,7 +16,7 @@ public class Diagonale {
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < width; j++) {
-                if (i == j || j == width - i - 1) {
+                if (i == j && j == width - i - 1) {
                     System.out.print("*");
                 } else {
                     System.out.print("-");
