@@ -20,10 +20,9 @@ public class EANCheck {
         for (int i = 0; i < 13; i++) {
             if ((((eanTemp / 1000000) / 1000000)) !=  0) {
                 break;
-            } else {
-                eanTemp *= (int) Math.pow(10, i);
-                leadingZeros++;
             }
+            eanTemp *= (int) Math.pow(10, i);
+            leadingZeros++;
         }
 
         for (int i = 12-leadingZeros+2; i > 0 ; i--) {
@@ -41,9 +40,8 @@ public class EANCheck {
 
         if (checkDigit == ean % 10) {
             System.out.println("The EAN is VALID.");
+            return;
         }
-        else {
-            System.out.println("The EAN is not VALID.");
-        }
+        System.out.println("The EAN is not VALID.");
     }
 }
