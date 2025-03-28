@@ -16,18 +16,18 @@ public class Notenstatistik {
             grade = sc.nextInt();
             if (grade < 0 || grade > 5) {
                 System.out.println("Falsche Eingabe");
-            } else {
-                if (grade == 5) {
-                    negativeCount++;
-                }
-                sum += grade;
-                if (grade != 0) {
-                    gradeCount++;
-                }
+                continue;
             }
+
+            if (grade == 5) negativeCount++;
+
+            sum += grade;
+            
+            if (grade != 0) gradeCount++;
+
         } while (grade != 0);
 
         sc.close();
-        System.out.printf("Notendurchschnitt: %.2f Anzahl Fuenfer: %d", sum/gradeCount, negativeCount);
+        System.out.printf("Notendurchschnitt: %.2f Anzahl Fuenfer: %d", sum / gradeCount, negativeCount);
     }
 }
