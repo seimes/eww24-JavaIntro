@@ -17,7 +17,7 @@ public class MinMidMax {
         if (a < b) {
             if (b < c) {
                 System.out.println(a + " < " + b + " < " + c);
-                System.out.println("a < b  < c");
+                System.out.println("a < b < c");
             }
             else {
                 if (b == c) {
