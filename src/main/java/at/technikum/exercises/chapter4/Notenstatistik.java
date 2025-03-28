@@ -22,7 +22,7 @@ public class Notenstatistik {
             if (grade == 5) negativeCount++;
 
             sum += grade;
-            
+
             if (grade != 0) gradeCount++;
 
         } while (grade != 0);
