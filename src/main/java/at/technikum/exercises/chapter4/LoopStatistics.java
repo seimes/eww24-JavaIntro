@@ -21,7 +21,6 @@ public class LoopStatistics {
                     return;
                 }
                 min = number;
-                max = number;
             }
             if (number > 0) {
                 count++;
