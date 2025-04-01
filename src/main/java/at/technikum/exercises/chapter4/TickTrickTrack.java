@@ -6,20 +6,19 @@ public class TickTrickTrack {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        int counter = 0;
+        int repetitionCounter = 0;
         int prev = 0;
-        boolean firstIteration = true;
         int inputCounter = 0;
 
         do {
             System.out.print("Eingabe: ");
             int number = sc.nextInt();
             if (number == prev) {
-                counter++;
+                repetitionCounter++;
             } else {
-                counter = 0;
+                repetitionCounter = 0;
             }
-            if (!firstIteration && counter != 2) {
+            if (inputCounter > 0 && repetitionCounter != 2) {
                 if (prev > number) {
                     System.out.println("Tick");
                 } else if (prev < number) {
@@ -28,10 +27,9 @@ public class TickTrickTrack {
                     System.out.println("Track");
                 }
             }
-            firstIteration = false;
             inputCounter++;
             prev = number;
-        } while (counter != 2);
+        } while (repetitionCounter != 2);
 
         System.out.printf("Ende (%d Eingaben)", inputCounter);
 
