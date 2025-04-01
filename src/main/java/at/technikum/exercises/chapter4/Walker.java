@@ -8,7 +8,8 @@ public class Walker {
         int size = 10;
         int yPos = size - 1;
         int xPos = 0;
-        int number;
+        //int number;
+        char input;
         int steps = 0;
 
         do {
@@ -25,35 +26,36 @@ public class Walker {
             }
 
             System.out.print("\nEingabe: ");
-            number = sc.nextInt();
+            //number = sc.nextInt();
+            input = sc.next("[a-zA-Z0-9]").charAt(0);
 
             boolean impossible = false;
             boolean unknown = false;
-            if (number == 8) {
+            if (input == '8' || input == 'w') {
                 if (yPos > 0) {
                     yPos--;
                 } else {
                     impossible = true;
                 }
-            } else if (number == 6) {
+            } else if (input == '6' || input == 'd') {
                 if (xPos < size-1) {
                     xPos++;
                 } else {
                     impossible = true;
                 }
-            } else if (number == 2) {
+            } else if (input == '2' || input == 's') {
                 if (yPos < size-1) {
                     yPos++;
                 } else {
                     impossible = true;
                 }
-            } else if (number == 4) {
+            } else if (input == '4' || input == 'a') {
                 if (xPos > 0) {
                     xPos--;
                 } else {
                     impossible = true;
                 }
-            } else if (number == 5) {
+            } else if (input == '5' || input == 'q') {
                 System.out.printf("Schritte insgesamt: %d", steps);
             } else {
                 unknown = true;
@@ -65,7 +67,7 @@ public class Walker {
             } else {
                 steps++;
             }
-        } while (number != 5);
+        } while (input != '5' && input != 'q');
         sc.close();
     }
 }
