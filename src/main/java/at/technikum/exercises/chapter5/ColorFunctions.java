@@ -3,6 +3,8 @@ package at.technikum.exercises.chapter5;
 import java.util.Scanner;
 
 public class ColorFunctions {
+    private static Scanner sc = new Scanner(System.in);
+
     public static void welcome() {
         System.out.println("Welcome to ColorFunctions!");
     }
@@ -13,7 +15,6 @@ public class ColorFunctions {
 
     public static int read_channel() {
         int input;
-        Scanner sc = new Scanner(System.in);
         do {
             System.out.print(": ");
             input = sc.nextInt();
@@ -91,7 +92,6 @@ public class ColorFunctions {
     }
 
     /*------------ DO NOT TOUCH ----------------*/
-    static Scanner sc;
 
     public static void main(String[] args) {
         convert();
