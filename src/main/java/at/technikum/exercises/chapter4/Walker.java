@@ -8,7 +8,6 @@ public class Walker {
         int size = 10;
         int yPos = size - 1;
         int xPos = 0;
-        //int number;
         char input;
         int steps = 0;
 
@@ -22,44 +21,43 @@ public class Walker {
                         System.out.print(".");
                     }
                 }
-                System.out.println("");
+                System.out.println();
             }
 
             System.out.print("\nEingabe: ");
-            //number = sc.nextInt();
             input = sc.next("[a-zA-Z0-9]").charAt(0);
 
             boolean impossible = false;
             boolean unknown = false;
-            if (input == '8' || input == 'w') {
-                if (yPos > 0) {
-                    yPos--;
-                } else {
-                    impossible = true;
-                }
-            } else if (input == '6' || input == 'd') {
-                if (xPos < size-1) {
-                    xPos++;
-                } else {
-                    impossible = true;
-                }
-            } else if (input == '2' || input == 's') {
-                if (yPos < size-1) {
-                    yPos++;
-                } else {
-                    impossible = true;
-                }
-            } else if (input == '4' || input == 'a') {
-                if (xPos > 0) {
-                    xPos--;
-                } else {
-                    impossible = true;
-                }
-            } else if (input == '5' || input == 'q') {
-                System.out.printf("Schritte insgesamt: %d", steps);
-            } else {
+
+            switch(input) {
+                case '8', 'w', 'k':
+                    if (yPos > 0) yPos--;
+                    else impossible = true;
+
+                    break;
+                case '6', 'd', 'l':
+                    if (xPos < size-1) xPos++;
+                    else impossible = true;
+
+                    break;
+                case '2', 's', 'j':
+                    if (yPos < size-1) yPos++;
+                    else impossible = true;
+
+                    break;
+                case '4', 'a', 'h':
+                    if (xPos > 0) xPos--;
+                    else impossible = true;
+
+                    break;
+                case '5', 'q':
+                    System.out.printf("Schritte insgesamt: %d", steps);
+                    break;
+            default:
                 unknown = true;
             }
+
             if (impossible) {
                 System.out.println("Aktion unmoeglich!");
             } else if (unknown) {
