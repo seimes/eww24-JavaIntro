@@ -1,7 +1,5 @@
 package at.technikum.exercises.voexercises;
 
-import java.util.Scanner;
-
 public class SumFunction {
     private static int arraySum(int[] arr) {
         int sum = 0;
