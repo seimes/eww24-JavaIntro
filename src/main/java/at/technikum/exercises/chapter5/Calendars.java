@@ -12,8 +12,8 @@ public class Calendars {
         }
 
         int[] daysInMonth = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};;
-        if (isLeap(year)) {
-            daysInMonth[1] = 29;
+        if (isLeap(year) && month == 2) {
+            return 29;
         }
 
         return daysInMonth[month - 1];
