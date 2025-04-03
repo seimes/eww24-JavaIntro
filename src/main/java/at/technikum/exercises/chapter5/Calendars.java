@@ -54,11 +54,9 @@ public class Calendars {
             monthShifted += 10;
             if (y == 0) {
                 y = 99;
+                c -= 1;
             } else {
                 y -= 1;
-            }
-            if (isLeap(year)) {
-                c -= 1;
             }
         } else {
             monthShifted -= 2;
@@ -304,7 +302,7 @@ public class Calendars {
 
     public static void main(String[] args) {
         sc = new Scanner(System.in);
-        int day = 1, month = 1, year = 1970;
+        int day = 1, month = 1, year = 1900;
         while (true) {
 
             int op;
