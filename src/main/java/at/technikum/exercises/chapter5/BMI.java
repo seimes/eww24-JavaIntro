@@ -13,23 +13,22 @@ public class BMI {
 
     public static int bmiCategory(double bmi) {
         if (bmi >= 0) {
-            if (bmi < 15) {
+            if (bmi < 15)
                 return 10;
-            } else if (bmi < 16) {
+            if (bmi < 16)
                 return 11;
-            } else if (bmi < 18.5) {
+            if (bmi < 18.5)
                 return 12;
-            } else if (bmi < 25) {
+            if (bmi < 25)
                 return 20;
-            } else if (bmi < 30) {
+            if (bmi < 30)
                 return 30;
-            } else if (bmi < 35) {
+            if (bmi < 35)
                 return 40;
-            } else if (bmi < 40) {
+            if (bmi < 40)
                 return 41;
-            } else if (bmi >= 40) {
+            if (bmi >= 40)
                 return 42;
-            }
         }
         return -1;
     }
