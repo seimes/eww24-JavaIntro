@@ -44,23 +44,23 @@ public class Calendars {
         if (!checkDate(year, month, day)) return -1;
 
         //day = 5;
-
-        int y = year % 100;
-        int c = year / 100;
-
         int monthShifted = month;
 
         if (month <= 2) {
             monthShifted += 10;
-            if (y == 0) {
+            /*if (y == 0) {
                 y = 99;
                 c -= 1;
             } else {
                 y -= 1;
-            }
+            }*/
+            year -= 1;
         } else {
             monthShifted -= 2;
         }
+
+        int y = year % 100;
+        int c = year / 100;
 
         int a = (int) (day +  Math.floor((2.6 * monthShifted - 0.2)) + y + Math.floor(y / 4.) + Math.floor(c / 4.) - 2 * c);
 
@@ -87,14 +87,8 @@ public class Calendars {
 
         int daysCounter = 0;
         for (int i = 1; i <= month; i++) {
-            int daysInMonth = daysInMonth(year, month);
-            System.out.println("month: , " + month + " days in month: " + daysInMonth);
-            for (int j = 1; j <= daysInMonth(year, i); j++) {
-                daysCounter++;
-                if (i == month && j == day) {
-                    break;
-                }
-            }
+            if (i == month) daysCounter += day;
+            else daysCounter += daysInMonth(year, month);
         }
         return daysCounter;
     }
@@ -302,7 +296,7 @@ public class Calendars {
 
     public static void main(String[] args) {
         sc = new Scanner(System.in);
-        int day = 1, month = 1, year = 1900;
+        int day = 1, month = 4, year = 1970;
         while (true) {
 
             int op;
