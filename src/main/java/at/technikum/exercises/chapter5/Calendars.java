@@ -48,12 +48,6 @@ public class Calendars {
 
         if (month <= 2) {
             monthShifted += 10;
-            /*if (y == 0) {
-                y = 99;
-                c -= 1;
-            } else {
-                y -= 1;
-            }*/
             year -= 1;
         } else {
             monthShifted -= 2;
@@ -62,8 +56,8 @@ public class Calendars {
         int y = year % 100;
         int c = year / 100;
 
-        int a = (int) (day +  Math.floor((2.6 * monthShifted - 0.2)) + y + Math.floor(y / 4.) + Math.floor(c / 4.) - 2 * c);
-
+        int a = day +  (int)(2.6 * monthShifted - 0.2) + y + (y / 4) + (c / 4) - 2 * c;
+        System.out.println("a " + a);
         int result = a % 7;
         return result >= 0 ? result : result + 7;
     }
@@ -88,7 +82,7 @@ public class Calendars {
         int daysCounter = 0;
         for (int i = 1; i <= month; i++) {
             if (i == month) daysCounter += day;
-            else daysCounter += daysInMonth(year, month);
+            else daysCounter += daysInMonth(year, i);
         }
         return daysCounter;
     }
@@ -103,7 +97,9 @@ public class Calendars {
         int daysPassedSinceFirstJan = dayNumber(year, month, day) - 1;
         int weekDayOfFirstJan = ymd2w(year, 1, 1);
 
-        return (daysPassedSinceFirstJan + weekDayOfFirstJan) / 7 + 1;
+        int days = daysPassedSinceFirstJan + weekDayOfFirstJan;
+
+        return days % 7 == 0 ? days / 7 : days / 7 + 1;
     }
 
     public static String getDayName(int day) {
@@ -259,13 +255,17 @@ public class Calendars {
 
             String dayFormat = "%2d  ";
             String spaceFormat = "%4s";
-            if (highlight && (i-weekDayOfFirst+1) == day) {
-                dayFormat = day < 10 ? "<%d> " : "<%2d>";
+            if (highlight) {
+                int currentDayValue = i - weekDayOfFirst + 1;
+                if (currentDayValue == day)
+                    dayFormat = day < 10 ? "<%d> " : "<%2d> ";
+                else if (day >= 10 && currentDayValue == day - 1)
+                    dayFormat = "%2d ";
             }
             if (i < weekDayOfFirst) {
                 System.out.printf(spaceFormat, " ");
             } else {
-                System.out.printf(dayFormat, i-weekDayOfFirst + 1);
+                System.out.printf(dayFormat, i - weekDayOfFirst + 1);
             }
         }
     }
@@ -296,7 +296,7 @@ public class Calendars {
 
     public static void main(String[] args) {
         sc = new Scanner(System.in);
-        int day = 1, month = 4, year = 1970;
+        int day = 14, month = 4, year = 2025;
         while (true) {
 
             int op;
