@@ -37,10 +37,8 @@ public class TimeCalculations {
 
         int min = min1 + min2;
         int hour = (hours1 + hours2) % 24;
-
-        if (min >= 60) {
-            hour += 1;
-        }
+        
+        hour += min / 60;
 
         return encode(hour, min % 60);
     }
