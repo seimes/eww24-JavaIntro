@@ -37,10 +37,20 @@ public class TimeCalculations {
 
         int min = min1 + min2;
         int hour = (hours1 + hours2) % 24;
-        
+
+        /*if (min >= 60) {
+            hour += 1;
+        }*/
         hour += min / 60;
 
         return encode(hour, min % 60);
+    }
+
+    private static int totalMinutes(int t) {
+        int hours = t / 100;
+        int min = t % 100;
+
+        return hours * 60 + min;
     }
 
 
@@ -54,6 +64,10 @@ public class TimeCalculations {
             print(time2);
             System.out.print(" = ");
             print(add(time1, time2));
+            System.out.println();
+
+            System.out.println("Minutes since midnight: " + totalMinutes(time1));
+            System.out.println("Minutes since midnight: " + totalMinutes(time2));
             System.out.println();
         }
     }
