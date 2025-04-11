@@ -47,8 +47,8 @@ public class TimeCalculations {
     }
 
     private static int totalMinutes(int t) {
-        int hours = t / 100;
-        int min = t % 100;
+        int hours = hours(t);
+        int min = minutes(t);
 
         return hours * 60 + min;
     }
