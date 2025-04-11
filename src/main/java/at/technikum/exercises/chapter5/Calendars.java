@@ -57,7 +57,7 @@ public class Calendars {
         int c = year / 100;
 
         int a = day +  (int)(2.6 * monthShifted - 0.2) + y + (y / 4) + (c / 4) - 2 * c;
-        System.out.println("a " + a);
+
         int result = a % 7;
         return result >= 0 ? result : result + 7;
     }
@@ -72,11 +72,12 @@ public class Calendars {
 
         if (month == 1 && day == 1) return 1;
         else if (month == 12 && day == 31) {
-            if (isLeap(year)) {
+            return isLeap(year) ? 366 : 365;
+            /*if (isLeap(year)) {
                 return 366;
             } else {
                 return 365;
-            }
+            }*/
         }
 
         int daysCounter = 0;
@@ -241,6 +242,7 @@ public class Calendars {
      */
     public static void printCalendar(int year, int month, int day, boolean highlight) {
         int weekDayOfFirst = ymd2w(year, month, 1);
+        int currentWeekDay = ymd2w(year, month, day);
         if (weekDayOfFirst == 0) {
             weekDayOfFirst = 7;
         }
@@ -257,8 +259,13 @@ public class Calendars {
             String spaceFormat = "%4s";
             if (highlight) {
                 int currentDayValue = i - weekDayOfFirst + 1;
-                if (currentDayValue == day)
-                    dayFormat = day < 10 ? "<%d> " : "<%2d> ";
+                if (currentDayValue == day) {
+                    if(currentWeekDay == 1) {
+                        dayFormat = day < 10 ? "<%d> " : "<%2d>";
+                    } else {
+                        dayFormat = day < 10 ? "<%d> " : "<%2d> ";
+                    }
+                }
                 else if (day >= 10 && currentDayValue == day - 1)
                     dayFormat = "%2d ";
             }
@@ -298,7 +305,6 @@ public class Calendars {
         sc = new Scanner(System.in);
         int day = 14, month = 4, year = 2025;
         while (true) {
-
             int op;
             System.out.printf("current date: %02d.%02d.%04d\n", day, month, year);
             System.out.printf("enter option: ");
