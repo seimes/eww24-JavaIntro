@@ -53,11 +53,12 @@ public class ZooManager {
             }
             sum += values[i];
         }
+
         return sum / count(values);
     }
 
     public static float b_of_max_a(float[] a, float[] b) {
-        if (a.length == 0 && b.length == 0) {
+        if (a.length == 0 && b.length == 0 || a.length != b.length) {
             return -1;
         }
 
