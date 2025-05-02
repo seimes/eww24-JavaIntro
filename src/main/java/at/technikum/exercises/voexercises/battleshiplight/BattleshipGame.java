@@ -1,7 +1,7 @@
 package at.technikum.exercises.voexercises.battleshiplight;
 
 import java.awt.*;
-import java.util.InputMismatchException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class BattleshipGame {
@@ -10,12 +10,16 @@ public class BattleshipGame {
     private Board board;
     private boolean isGameOver;
     private final Scanner scanner;
+    private ArrayList<Player> players;
+    private int maxScore;
 
     public BattleshipGame() {
         this.points = 0;
         this.size = 0;
         this.isGameOver = false;
         this.scanner = new Scanner(System.in);
+        this.players = new ArrayList<Player>();
+        this.maxScore = this.size * 100;
         // TODO: refactor
     }
 
@@ -37,27 +41,83 @@ public class BattleshipGame {
 
     public void start() {
         // TODO: ask player how big the game board should be
-        this.setSize(this.readPlayerSize());
-        this.board = new Board(this.getSize());
+        this.initGame();
+
+        boolean isTurnOfPlayer1 = true;
+        int winningID = -1;
 
         // TODO: print board
-        //while (!isGameOver) {
-        this.board.print(); //or this.visualizer.visualize(this.board)
+        while (winningID < 0) {
+            int playerID = isTurnOfPlayer1 ? 0 : 1;
+            int attackingPlayerID = playerID == 0 ? 1 : 0;
+            Player player = this.players.get(playerID);
+            Player attackingPlayer = this.players.get(attackingPlayerID);
 
-        // TODO: ask player for coordinates
-        Point attackCoordinates = this.readPlayerAttackCoordinates();
+            System.out.println("\nTurn of player " + attackingPlayer.getName());
+            System.out.printf("Board of player %s:\n", player.getName());
+            player.getBoard().print(); //or this.visualizer.visualize(this.board)
 
-        // TODO: change state accordingly
+            // TODO: ask player for coordinates
+            Point attackCoordinates = this.readPlayerAttackCoordinates();
 
-        // TODO: check score
+            // TODO: change state accordingly
+            player.getBoard().updateStateAndScore(attackCoordinates, attackingPlayer);
 
-        // TODO: do game loop until won
+            if (attackingPlayer.getScore() >= this.maxScore) {
+                winningID = attackingPlayerID;
+            }
 
-        // TODO: maybe ask if game should be started again or not
-        //}
+            // TODO: do game loop until won
+            System.out.printf("Board of player %s:\n", player.getName());
+            player.getBoard().print();
+            System.out.printf("Player %s Score: %d\n", attackingPlayer.getName(), attackingPlayer.getScore());
+            // TODO: maybe ask if game should be started again or not
+            isTurnOfPlayer1 = !isTurnOfPlayer1;
+
+            if(winningID >= 0) {
+                Player winningPlayer = this.players.get(winningID);
+                System.out.println("\nGame Over!");
+                System.out.printf("Player %s won!\n", winningPlayer.getName());
+                System.out.printf("Final score of player %s: %d\n", winningPlayer.getName(), this.players.get(winningID).getScore());
+
+                if (this.checkForRestart()) {
+                    winningID = -1;
+                    isTurnOfPlayer1 = true;
+                    this.restartGame();
+                } else {
+                    break;
+                }
+            }
+        }
     }
 
-    private int readPlayerSize() {
+    private boolean checkForRestart() {
+        System.out.println("Should the game be restarted? y/n?");
+        Scanner scanner = new Scanner(System.in);
+        String answer = scanner.nextLine();
+
+        return answer.equalsIgnoreCase("Y");
+    }
+
+    private void initGame() {
+        this.setSize(this.readBoardSize());
+        this.maxScore = this.getSize() * 100;
+        //this.board = new Board(this.getSize());
+        System.out.print("Player 1, please enter your name: ");
+        Scanner scanner = new Scanner(System.in);
+        String player1Name = scanner.nextLine();
+        this.players.add(new Player(player1Name, new Board(this.getSize())));
+        System.out.print("Player 2, please enter your name: ");
+        String player2Name = scanner.nextLine();
+        this.players.add(new Player(player2Name, new Board(this.getSize())));
+    }
+
+    private void restartGame() {
+        this.players = new ArrayList<Player>();
+        this.initGame();
+    }
+
+    private int readBoardSize() {
         System.out.print("Please enter a board size: ");
         return this.scanner.nextInt();
     }
@@ -73,18 +133,19 @@ public class BattleshipGame {
     private int readInteger(String label) {
         int x = -1;
 
-        do {
+        while (x < 0) {
+            System.out.printf("%s: ", label);
+            //String input = scanner.nextLine();
             try {
+                x = scanner.nextInt();
                 if (x < 0) {
-                    System.out.printf("%s: ", label);
-                    x = scanner.nextInt();
+                    System.out.println("Please insert a non-negative number.");
                 }
-            } catch (InputMismatchException ime) {
+            } catch (NumberFormatException nfe) {
                 System.out.printf("Wrong input data type for %s!\n", label);
-                this.scanner.nextLine();
+                scanner.nextLine();
             }
-        } while (x < 0);
-
+        }
         return x;
     }
 }
