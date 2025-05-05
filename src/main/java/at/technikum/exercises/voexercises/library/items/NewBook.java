@@ -9,11 +9,6 @@ public class NewBook extends Book implements IRentable, IDonatable {
     }
 
     @Override
-    public void rent() {
-
-    }
-
-    @Override
     public boolean isNeeded() {
         return false;
     }

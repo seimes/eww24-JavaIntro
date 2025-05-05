@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public interface IRentable {
     // public nicht notwendig, weil Interfaces eh immer von anderen Klassen implementiert werden
-    void rent();
+    //void rent();
     boolean isAvailable();
     void setRentDate(LocalDateTime now);
 }

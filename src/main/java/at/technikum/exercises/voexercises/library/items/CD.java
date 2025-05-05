@@ -49,9 +49,4 @@ public class CD extends Item implements IRentable {
     public void print() {
         System.out.printf("CD %s %s%n", this.title, this.artist);
     }
-
-    @Override
-    public void rent() {
-
-    }
 }

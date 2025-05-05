@@ -30,9 +30,4 @@ public class EReader extends Item implements IRentable {
     public void print() {
         System.out.printf("EReader %s %s%n", this.name, this.manufacturer);
     }
-
-    @Override
-    public void rent() {
-
-    }
 }
