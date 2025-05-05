@@ -1,9 +1,8 @@
 package at.technikum.exercises.voexercises.library.items;
 
-public class Book extends Item {
+public abstract class Book extends Item {
     private String title;
     private String author;
-    private String isbn;
     private int year;
 
     public Book(String title, String author, int year, boolean available) {
@@ -28,14 +27,6 @@ public class Book extends Item {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
     }
 
     public int getYear() {

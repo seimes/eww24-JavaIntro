@@ -1,6 +1,6 @@
 package at.technikum.exercises.voexercises.library.items;
 
-public class CD extends Item {
+public class CD extends Item implements IRentable {
     private String title;
     private String artist;
     private int numberOfTracks;
@@ -48,5 +48,10 @@ public class CD extends Item {
 
     public void print() {
         System.out.printf("CD %s %s%n", this.title, this.artist);
+    }
+
+    @Override
+    public void rent() {
+
     }
 }
