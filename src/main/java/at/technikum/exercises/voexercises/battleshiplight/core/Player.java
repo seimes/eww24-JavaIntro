@@ -1,11 +1,20 @@
 package at.technikum.exercises.voexercises.battleshiplight;
 
+import at.technikum.exercises.voexercises.battleshiplight.interfaces.BoardLike;
+
 public class Player {
     private String name;
-    private Board board;
+    private BoardLike<? extends Field> board;
     private int score;
 
-    public Player(String name, Board board) {
+    public Player() {}
+
+    public Player(String name) {
+        this.name = name;
+        this.score = 0;
+    }
+
+    public Player(String name, BoardLike<? extends Field> board) {
         this.name = name;
         this.board = board;
         this.score = 0;
@@ -19,7 +28,7 @@ public class Player {
         this.score += amount;
     }
 
-    public Board getBoard() {
+    public BoardLike<? extends Field> getBoard() {
         return board;
     }
 

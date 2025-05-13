@@ -1,17 +1,44 @@
 package at.technikum.exercises.voexercises.battleshiplight;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class BattleshipGame {
-    private int points;
-    private int size;
-    private Board board;
-    private boolean isGameOver;
-    private final Scanner scanner;
-    private ArrayList<Player> players;
-    private int maxScore;
+public class BattleshipGame extends Application {
+    protected int points;
+    protected int size;
+    protected Board board;
+    protected boolean isGameOver;
+    protected final Scanner scanner;
+    protected ArrayList<Player> players;
+    protected int maxScore;
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        isGameOver = gameOver;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(ArrayList<Player> players) {
+        this.players = players;
+    }
+
+    public int getMaxScore() {
+        return maxScore;
+    }
+
+    public void setMaxScore(int maxScore) {
+        this.maxScore = maxScore;
+    }
 
     public BattleshipGame() {
         this.points = 0;
@@ -22,6 +49,9 @@ public class BattleshipGame {
         this.maxScore = this.size * 100;
         // TODO: refactor
     }
+
+    @Override
+    public void start(Stage stage) throws Exception {}
 
     public int getSize() {
         return size;
@@ -55,7 +85,7 @@ public class BattleshipGame {
 
             System.out.println("\nTurn of player " + attackingPlayer.getName());
             System.out.printf("Board of player %s:\n", player.getName());
-            player.getBoard().print(); //or this.visualizer.visualize(this.board)
+            ((Board) player.getBoard()).print(); //or this.visualizer.visualize(this.board)
 
             // TODO: ask player for coordinates
             Point attackCoordinates = this.readPlayerAttackCoordinates();
@@ -69,7 +99,7 @@ public class BattleshipGame {
 
             // TODO: do game loop until won
             System.out.printf("Board of player %s:\n", player.getName());
-            player.getBoard().print();
+            ((Board) player.getBoard()).print();
             System.out.printf("Player %s Score: %d\n", attackingPlayer.getName(), attackingPlayer.getScore());
             // TODO: maybe ask if game should be started again or not
             isTurnOfPlayer1 = !isTurnOfPlayer1;
@@ -91,7 +121,7 @@ public class BattleshipGame {
         }
     }
 
-    private boolean checkForRestart() {
+    protected boolean checkForRestart() {
         System.out.println("Should the game be restarted? y/n?");
         Scanner scanner = new Scanner(System.in);
         String answer = scanner.nextLine();
@@ -99,25 +129,25 @@ public class BattleshipGame {
         return answer.equalsIgnoreCase("Y");
     }
 
-    private void initGame() {
+    protected void initGame() {
         this.setSize(this.readBoardSize());
         this.maxScore = this.getSize() * 100;
         //this.board = new Board(this.getSize());
         System.out.print("Player 1, please enter your name: ");
         Scanner scanner = new Scanner(System.in);
         String player1Name = scanner.nextLine();
-        this.players.add(new Player(player1Name, new Board(this.getSize())));
+        this.players.add(new Player(player1Name, new Board(this.getSize(), false)));
         System.out.print("Player 2, please enter your name: ");
         String player2Name = scanner.nextLine();
-        this.players.add(new Player(player2Name, new Board(this.getSize())));
+        this.players.add(new Player(player2Name, new Board(this.getSize(), true)));
     }
 
-    private void restartGame() {
+    protected void restartGame() {
         this.players = new ArrayList<Player>();
         this.initGame();
     }
 
-    private int readBoardSize() {
+    protected int readBoardSize() {
         System.out.print("Please enter a board size: ");
         return this.scanner.nextInt();
     }

@@ -6,7 +6,7 @@ public class Field {
     private boolean hasShip;
     */
 
-    private State state;
+    protected State state;
 
     public Field() {
         this.state = State.NO_SHIP_NO_HIT;

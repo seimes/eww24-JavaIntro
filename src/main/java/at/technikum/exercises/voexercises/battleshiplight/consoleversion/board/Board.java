@@ -1,39 +1,41 @@
 package at.technikum.exercises.voexercises.battleshiplight;
 
+import at.technikum.exercises.voexercises.battleshiplight.interfaces.BoardLike;
+
 import java.awt.*;
 import java.util.Random;
 
-public class Board {
-    private Field[][] fields;
-    private static final int scoreUpdate = 100;
+public class Board implements BoardLike<Field> {
+    protected Field[][] fields;
+    protected static final int scoreUpdate = 100;
 
-    public Board(int size) {
+    public Board(int size, boolean isComputer) {
         this.fields = new Field[size][size];
         this.init();
-        this.placeRandomShips();
+        if (isComputer) this.placeRandomShips();
     }
 
-    private void init() {
-        for(int y=0; y < fields.length; y++) {
-            for(int x=0; x<fields.length; x++) {
+    protected void init() {
+        for (int y = 0; y < fields.length; y++) {
+            for (int x = 0; x < fields.length; x++) {
                 this.fields[x][y] = new Field();
             }
         }
     }
 
-    private void placeRandomShips() {
+    protected void placeRandomShips() {
         for (int i = 0; i < this.fields.length; i++) {
             this.placeRandomShip();
         }
     }
 
-    private void placeRandomShip() {
+    protected void placeRandomShip() {
         int freeFieldsAmount = this.getFreeFieldsAmount();
         Field[] emptyFields = new Field[freeFieldsAmount];
 
         int i = 0;
-        for(int y=0; y < fields.length; y++) {
-            for(int x=0; x<fields.length; x++) {
+        for (int y = 0; y < fields.length; y++) {
+            for (int x = 0; x < fields.length; x++) {
                 Field field = this.fields[x][y];
 
                 if (field.getState() == State.NO_SHIP_NO_HIT) {
@@ -47,11 +49,11 @@ public class Board {
         emptyFields[randomFieldNumber].placeShip();
     }
 
-    private int getFreeFieldsAmount() {
+    public int getFreeFieldsAmount() {
         int freeFieldsCounter = 0;
 
-        for(int y=0; y < this.fields.length; y++) {
-            for(int x=0; x < this.fields.length; x++) {
+        for (int y = 0; y < this.fields.length; y++) {
+            for (int x = 0; x < this.fields.length; x++) {
                 Field field = this.fields[x][y];
 
                 if (field.getState() == State.NO_SHIP_NO_HIT) {
@@ -81,18 +83,17 @@ public class Board {
         this.printNumbers(fields.length);
         System.out.println();
 
-        for(int y=0; y < this.fields.length; y++) {
+        for (int y = 0; y < this.fields.length; y++) {
             System.out.print(y + " ");
 
             for (int x = 0; x < this.fields.length; x++) {
                 if (fields[x][y].getState() == State.SHIP_NO_HIT)
                     System.out.print("⛵ ");
-                else if(fields[x][y].getState() == State.SHIP_HIT)
+                else if (fields[x][y].getState() == State.SHIP_HIT)
                     System.out.print("☠\uFE0F ");
-                else if(fields[x][y].getState() == State.NO_SHIP_HIT) {
+                else if (fields[x][y].getState() == State.NO_SHIP_HIT) {
                     System.out.print(ANSIIColors.GRAY + "~~ " + ANSIIColors.RESET);
-                }
-                else
+                } else
                     //System.out.print("\uD83C\uDF0A");
                     System.out.print(ANSIIColors.BLUE + "~~ " + ANSIIColors.RESET);
             }
@@ -102,7 +103,7 @@ public class Board {
         System.out.println();
     }
 
-    private void printRepeatedChars(char symbol, int amount, boolean trailingNewline) {
+    protected void printRepeatedChars(char symbol, int amount, boolean trailingNewline) {
         for (int i = 0; i < amount; i++) {
             System.out.print(symbol);
         }
@@ -110,25 +111,21 @@ public class Board {
         if (trailingNewline) System.out.println();
     }
 
-    private void printNumbers(int start, int end, int step) {
-        for (int i = start; i < end; i+=step) {
-            if(i == 0)
+    protected void printNumbers(int start, int end, int step) {
+        for (int i = start; i < end; i += step) {
+            if (i == 0)
                 System.out.printf("%d ", i);
             else
                 System.out.printf(" %d ", i);
         }
     }
 
-    private void printNumbers(int start, int end) {
+    protected void printNumbers(int start, int end) {
         this.printNumbers(start, end, 1);
     }
 
     private void printNumbers(int end) {
         this.printNumbers(0, end);
-    }
-
-    public Field[][] getFields() {
-        return fields;
     }
 
     public void setFields(Field[][] fields) {
@@ -138,5 +135,15 @@ public class Board {
     public void resetBoard() {
         this.init();
         this.placeRandomShips();
+    }
+
+    @Override
+    public Field[][] getFields() {
+        return fields;
+    }
+
+    @Override
+    public int getSize() {
+        return fields.length;
     }
 }
