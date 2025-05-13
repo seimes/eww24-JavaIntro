@@ -1,5 +1,8 @@
-package at.technikum.exercises.voexercises.battleshiplight;
+package at.technikum.exercises.voexercises.battleshiplight.consoleversion.board;
 
+import at.technikum.exercises.voexercises.battleshiplight.core.ANSIIColors;
+import at.technikum.exercises.voexercises.battleshiplight.core.Player;
+import at.technikum.exercises.voexercises.battleshiplight.core.State;
 import at.technikum.exercises.voexercises.battleshiplight.interfaces.BoardLike;
 
 import java.awt.*;
@@ -73,7 +76,7 @@ public class Board implements BoardLike<Field> {
         }
         if (field.getState() == State.SHIP_NO_HIT) {
             field.setState(State.SHIP_HIT);
-            player.updateScore(Board.scoreUpdate);
+            player.getGameState().updateScore(Board.scoreUpdate);
         }
     }
 

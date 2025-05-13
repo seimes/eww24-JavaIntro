@@ -1,4 +1,6 @@
-package at.technikum.exercises.voexercises.battleshiplight;
+package at.technikum.exercises.voexercises.battleshiplight.consoleversion.board;
+
+import at.technikum.exercises.voexercises.battleshiplight.core.State;
 
 public class Field {
     /*

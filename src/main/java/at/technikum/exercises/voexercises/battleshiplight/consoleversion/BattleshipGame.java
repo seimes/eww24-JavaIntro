@@ -1,5 +1,7 @@
-package at.technikum.exercises.voexercises.battleshiplight;
+package at.technikum.exercises.voexercises.battleshiplight.consoleversion;
 
+import at.technikum.exercises.voexercises.battleshiplight.consoleversion.board.Board;
+import at.technikum.exercises.voexercises.battleshiplight.core.Player;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -93,14 +95,14 @@ public class BattleshipGame extends Application {
             // TODO: change state accordingly
             player.getBoard().updateStateAndScore(attackCoordinates, attackingPlayer);
 
-            if (attackingPlayer.getScore() >= this.maxScore) {
+            if (attackingPlayer.getGameState().getScore() >= this.maxScore) {
                 winningID = attackingPlayerID;
             }
 
             // TODO: do game loop until won
             System.out.printf("Board of player %s:\n", player.getName());
             ((Board) player.getBoard()).print();
-            System.out.printf("Player %s Score: %d\n", attackingPlayer.getName(), attackingPlayer.getScore());
+            System.out.printf("Player %s Score: %d\n", attackingPlayer.getName(), attackingPlayer.getGameState().getScore());
             // TODO: maybe ask if game should be started again or not
             isTurnOfPlayer1 = !isTurnOfPlayer1;
 
@@ -108,7 +110,7 @@ public class BattleshipGame extends Application {
                 Player winningPlayer = this.players.get(winningID);
                 System.out.println("\nGame Over!");
                 System.out.printf("Player %s won!\n", winningPlayer.getName());
-                System.out.printf("Final score of player %s: %d\n", winningPlayer.getName(), this.players.get(winningID).getScore());
+                System.out.printf("Final score of player %s: %d\n", winningPlayer.getName(), this.players.get(winningID).getGameState().getScore());
 
                 if (this.checkForRestart()) {
                     winningID = -1;

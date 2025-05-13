@@ -1,4 +1,4 @@
-package at.technikum.exercises.voexercises.battleshiplight;
+package at.technikum.exercises.voexercises.battleshiplight.core;
 
 public enum State {
     NO_SHIP_NO_HIT,

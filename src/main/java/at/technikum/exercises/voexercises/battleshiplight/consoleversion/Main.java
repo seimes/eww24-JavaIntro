@@ -1,4 +1,4 @@
-package at.technikum.exercises.voexercises.battleshiplight;
+package at.technikum.exercises.voexercises.battleshiplight.consoleversion;
 
 public class Main {
 
