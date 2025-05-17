@@ -1,6 +1,8 @@
 package at.technikum.exercises.voexercises.battleshiplight.core;
 
 public class PlayerState {
+    private static final int SCORE_INCREMENT = 100;
+
     private boolean isBoardSubmitted;
     private int shipsPlaced;
     private int score;
@@ -37,6 +39,10 @@ public class PlayerState {
 
     public void updateScore(int amount) {
         this.score += amount;
+    }
+
+    public void incrementScore() {
+        this.updateScore(SCORE_INCREMENT);
     }
 
     public boolean isBoardSubmitted() {

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameSceneBuilder {
+
     public static void buildStartScene(Stage primaryStage) {
         PlayerSetupView playerSetupView = new PlayerSetupView();
 
@@ -70,11 +71,14 @@ public class GameSceneBuilder {
                     new BackgroundFill(GameTheme.BGCOLOR, null, Insets.EMPTY)
             ));
 
-            TextFlow welcomeText = createWelcomeText(player);
+            Text[] scoreTexts = new Text[2];
+            TextFlow welcomeText = createInstructionAndStatsText(player, opponent, scoreTexts);
+            Text playerScore = scoreTexts[0];
+            Text opponentScore = scoreTexts[1];
             gameRoot.getChildren().add(welcomeText);
 
             GridPane playerGrid = createPlayerGrid(player, opponent, gridSize, playerBoard, playerSetupView);
-            GridPane oppGrid = createOpponentGrid(opponent, gridSize, player, selectedAttackCell, selectedAttackCells);
+            GridPane oppGrid = createOpponentGrid(opponent, gridSize, player, selectedAttackCell, selectedAttackCells, playerScore);
 
             HBox boardsContainer = new HBox(50);
             boardsContainer.setAlignment(Pos.CENTER);
@@ -101,7 +105,7 @@ public class GameSceneBuilder {
                         player.getGameState().incrementTurnCount();
 
                         if (nextPlayer.getGameState().isComputerPlayer()) {
-                            performComputerTurn(nextPlayer, player, primaryStage, scenes);
+                            performComputerTurn(nextPlayer, player, primaryStage, scenes, opponentScore);
                         } else {
                             primaryStage.setScene(scenes[nextPlayerIndex]);
                         }
@@ -118,7 +122,7 @@ public class GameSceneBuilder {
         }
     }
 
-    private static void performComputerTurn(Player computer, Player player, Stage primaryStage, Scene[] scenes) {
+    private static void performComputerTurn(Player computer, Player player, Stage primaryStage, Scene[] scenes, Text opponentScore) {
         if (!(player.getBoard() instanceof BoardGUI humanBoard)) return;
 
         FieldGUI[][] fields = humanBoard.getFields();
@@ -134,6 +138,8 @@ public class GameSceneBuilder {
 
                     if (cell.getState() == State.SHIP_NO_HIT) {
                         cell.setState(State.SHIP_HIT);
+                        computer.getGameState().incrementScore();
+                        opponentScore.setText(computer.getName() + " Score: " + computer.getGameState().getScore());
                         btn.setGraphic(AssetLoader.convertToImageView(AssetLoader.HIT_IMG, 40));
                     } else {
                         cell.setState(State.NO_SHIP_HIT);
@@ -151,7 +157,7 @@ public class GameSceneBuilder {
     }
 
 
-    private static void allowOneAttack(BoardLike<? extends Field> oppBoard, Button submitBtn, Runnable onAttackDone) {
+    /*private static void allowOneAttack(BoardLike<? extends Field> oppBoard, Button submitBtn, Runnable onAttackDone) {
         if (!(oppBoard instanceof BoardGUI boardGUI)) return;
 
         FieldGUI[][] fields = boardGUI.getFields();
@@ -170,7 +176,7 @@ public class GameSceneBuilder {
                 });
             }
         }
-    }
+    }*/
 
     private static void disableAllOpponentButtons(FieldGUI[][] fields) {
         for (FieldGUI[] row : fields) {
@@ -242,7 +248,7 @@ public class GameSceneBuilder {
         return playerGrid;
     }
 
-    private static GridPane createOpponentGrid(Player opponent, double gridSize, Player player, FieldGUI[] selectedAttackCell, ArrayList<FieldGUI> selectedAttackCells) {
+    private static GridPane createOpponentGrid(Player opponent, double gridSize, Player player, FieldGUI[] selectedAttackCell, ArrayList<FieldGUI> selectedAttackCells, Text playerScore) {
         GridPane oppGrid = new GridPane();
         oppGrid.setHgap(2);
         oppGrid.setVgap(2);
@@ -251,7 +257,7 @@ public class GameSceneBuilder {
             for (int col = 0; col < gridSize; col++) {
                 FieldGUI oppCell = (FieldGUI) opponent.getBoard().getFields()[row][col];
                 FieldGUI attackCell = new FieldGUI(50, new Point(0, 0), new Point(col, row));
-                Button attackCellButton = getAttackButton(player, attackCell, opponent, oppCell, selectedAttackCell, selectedAttackCells);
+                Button attackCellButton = getAttackButton(player, attackCell, opponent, oppCell, selectedAttackCell, selectedAttackCells, playerScore);
 
                 oppGrid.add(attackCellButton, col, row);
             }
@@ -259,12 +265,13 @@ public class GameSceneBuilder {
         return oppGrid;
     }
 
-    private static Button getAttackButton(Player player, FieldGUI attackCell, Player opponent, FieldGUI oppCell, FieldGUI[] selectedAttackCell, ArrayList<FieldGUI> selectedAttackCells) {
+    private static Button getAttackButton(Player player, FieldGUI attackCell, Player opponent, FieldGUI oppCell, FieldGUI[] selectedAttackCell, ArrayList<FieldGUI> selectedAttackCells, Text playerScore) {
         Button attackCellButton = attackCell.getButton();
 
         AtomicBoolean isAttackSubmitted = new AtomicBoolean(false);
 
         attackCellButton.setOnMouseClicked(e -> {
+            System.out.println("scoreee: " + player.getGameState().getScore());
             for (int row = 0; row < opponent.getBoard().getFields().length; row++) {
                 for (int col = 0; col <  opponent.getBoard().getFields().length; col++) {
                     FieldGUI cell = (FieldGUI) opponent.getBoard().getFields()[row][col];
@@ -300,15 +307,17 @@ public class GameSceneBuilder {
             isAttackSubmitted.set(true);
 
             if (isAttackSubmitted.get())
-                updateFieldStateAfterAttack(oppCell, attackCellButton);
+                updateFieldStateAfterAttack(player, opponent, oppCell, attackCellButton, playerScore);
         });
 
         return attackCellButton;
     }
 
-    private static void updateFieldStateAfterAttack(FieldGUI oppCell, Button attackCellButton) {
+    private static void updateFieldStateAfterAttack(Player player, Player opponent, FieldGUI oppCell, Button attackCellButton, Text playerScore) {
         if (oppCell.getState() == State.SHIP_NO_HIT) {
             oppCell.setState(State.SHIP_HIT);
+            player.getGameState().incrementScore();
+            playerScore.setText("Your Score: " + player.getGameState().getScore());
             attackCellButton.setGraphic(AssetLoader.convertToImageView(AssetLoader.HIT_IMG, 40));
         } else if (oppCell.getState() == State.NO_SHIP_NO_HIT){
             oppCell.setState(State.NO_SHIP_HIT);
@@ -325,7 +334,7 @@ public class GameSceneBuilder {
         attackCell.getButton().setGraphic(hitView);
     }
 
-    private static TextFlow createWelcomeText(Player player) {
+    private static TextFlow createInstructionAndStatsText(Player player, Player opponent, Text[] scoreTexts) {
         Text welcome = new Text("Welcome, ");
         Text name = new Text(player.getName() + "!\n");
         String instructionText = "Select a cell to attack on the right grid.";
@@ -334,16 +343,23 @@ public class GameSceneBuilder {
         }
         Text instruction = new Text(instructionText);
 
+        scoreTexts[0] = new Text("Your Score: " + player.getGameState().getScore());
+        scoreTexts[1] = new Text(opponent.getName() + " Score: " + opponent.getGameState().getScore());
+
         // Style the texts
         welcome.setFont(javafx.scene.text.Font.font("Arial", FontWeight.NORMAL, 20));
         name.setFont(GameTheme.TITLE_FONT);
         instruction.setFont(Font.font("Arial", FontWeight.NORMAL, 16));
+        scoreTexts[0].setFont(Font.font("Arial", FontWeight.NORMAL, 16));
+        scoreTexts[1].setFont(Font.font("Arial", FontWeight.NORMAL, 16));
 
         welcome.setFill(javafx.scene.paint.Color.WHITE);
         name.setFill(javafx.scene.paint.Color.LIGHTGREEN);
         instruction.setFill(Color.LIGHTGRAY);
+        scoreTexts[0].setFill(Color.LIGHTGRAY);
+        scoreTexts[1].setFill(Color.LIGHTGRAY);
 
-        TextFlow textFlow = new TextFlow(welcome, name, instruction);
+        TextFlow textFlow = new TextFlow(welcome, name, instruction, scoreTexts[0], scoreTexts[1]);
         textFlow.setTextAlignment(TextAlignment.CENTER);
         textFlow.setPadding(new Insets(20));
         textFlow.setMaxWidth(600);
