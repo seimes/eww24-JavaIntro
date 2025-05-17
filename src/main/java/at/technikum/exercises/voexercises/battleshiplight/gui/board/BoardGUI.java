@@ -25,7 +25,7 @@ public class BoardGUI implements BoardLike<FieldGUI> {
         // Initializes the GUI fields with their visual properties
         for (int y = 0; y < this.fields.length; y++) {
             for (int x = 0; x < this.fields.length; x++) {
-                this.fields[x][y] = new FieldGUI(this.cellSize, new Point(50, 60), new Point(x, y));
+                this.fields[y][x] = new FieldGUI(this.cellSize, new Point(50, 60), new Point(x, y));
             }
         }
     }
@@ -44,7 +44,7 @@ public class BoardGUI implements BoardLike<FieldGUI> {
         int i = 0;
         for (int y = 0; y < fields.length; y++) {
             for (int x = 0; x < fields.length; x++) {
-                FieldGUI field = this.fields[x][y];
+                FieldGUI field = this.fields[y][x];
 
                 if (field.getState() == State.NO_SHIP_NO_HIT) {
                     emptyFields[i++] = field;
@@ -62,7 +62,7 @@ public class BoardGUI implements BoardLike<FieldGUI> {
 
         for (int y = 0; y < this.fields.length; y++) {
             for (int x = 0; x < this.fields.length; x++) {
-                Field field = this.fields[x][y];
+                Field field = this.fields[y][x];
 
                 if (field.getState() == State.NO_SHIP_NO_HIT) {
                     freeFieldsCounter++;

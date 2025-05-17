@@ -21,7 +21,7 @@ public class Board implements BoardLike<Field> {
     protected void init() {
         for (int y = 0; y < fields.length; y++) {
             for (int x = 0; x < fields.length; x++) {
-                this.fields[x][y] = new Field();
+                this.fields[y][x] = new Field();
             }
         }
     }
@@ -39,7 +39,7 @@ public class Board implements BoardLike<Field> {
         int i = 0;
         for (int y = 0; y < fields.length; y++) {
             for (int x = 0; x < fields.length; x++) {
-                Field field = this.fields[x][y];
+                Field field = this.fields[y][x];
 
                 if (field.getState() == State.NO_SHIP_NO_HIT) {
                     emptyFields[i++] = field;
@@ -57,7 +57,7 @@ public class Board implements BoardLike<Field> {
 
         for (int y = 0; y < this.fields.length; y++) {
             for (int x = 0; x < this.fields.length; x++) {
-                Field field = this.fields[x][y];
+                Field field = this.fields[y][x];
 
                 if (field.getState() == State.NO_SHIP_NO_HIT) {
                     freeFieldsCounter++;
@@ -90,11 +90,11 @@ public class Board implements BoardLike<Field> {
             System.out.print(y + " ");
 
             for (int x = 0; x < this.fields.length; x++) {
-                if (fields[x][y].getState() == State.SHIP_NO_HIT)
+                if (fields[y][x].getState() == State.SHIP_NO_HIT)
                     System.out.print("⛵ ");
-                else if (fields[x][y].getState() == State.SHIP_HIT)
+                else if (fields[y][x].getState() == State.SHIP_HIT)
                     System.out.print("☠\uFE0F ");
-                else if (fields[x][y].getState() == State.NO_SHIP_HIT) {
+                else if (fields[y][x].getState() == State.NO_SHIP_HIT) {
                     System.out.print(ANSIIColors.GRAY + "~~ " + ANSIIColors.RESET);
                 } else
                     //System.out.print("\uD83C\uDF0A");

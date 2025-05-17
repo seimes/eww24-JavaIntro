@@ -5,12 +5,26 @@ public class PlayerState {
     private int shipsPlaced;
     private int score;
     private boolean isComputerPlayer;
+    private int turnCount;
 
     public PlayerState() {
         this.isBoardSubmitted = false;
         this.shipsPlaced = 0;
         this.score = 0;
         this.isComputerPlayer = false;
+        this.turnCount = 1;
+    }
+
+    public int getTurnCount() {
+        return turnCount;
+    }
+
+    public void setTurnCount(int turnCount) {
+        this.turnCount = turnCount;
+    }
+
+    public void incrementTurnCount() {
+        this.turnCount++;
     }
 
     public int getScore() {

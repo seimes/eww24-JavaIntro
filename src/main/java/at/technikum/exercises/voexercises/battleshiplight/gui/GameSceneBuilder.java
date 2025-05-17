@@ -12,7 +12,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -23,6 +22,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameSceneBuilder {
@@ -63,6 +63,7 @@ public class GameSceneBuilder {
         if (playerBoard instanceof BoardGUI && oppBoard instanceof BoardGUI) {
             VBox gameRoot = new VBox(20);
             final FieldGUI[] selectedAttackCell = {null};
+            ArrayList<FieldGUI> selectedAttackCells = new ArrayList<FieldGUI>();
             gameRoot.setAlignment(Pos.CENTER);
             gameRoot.setPadding(new Insets(20));
             gameRoot.setBackground(new Background(
@@ -73,7 +74,7 @@ public class GameSceneBuilder {
             gameRoot.getChildren().add(welcomeText);
 
             GridPane playerGrid = createPlayerGrid(player, opponent, gridSize, playerBoard, playerSetupView);
-            GridPane oppGrid = createOpponentGrid(opponent, gridSize, player.getGameState(), selectedAttackCell);
+            GridPane oppGrid = createOpponentGrid(opponent, gridSize, player, selectedAttackCell, selectedAttackCells);
 
             HBox boardsContainer = new HBox(50);
             boardsContainer.setAlignment(Pos.CENTER);
@@ -91,12 +92,13 @@ public class GameSceneBuilder {
                 if (player.getGameState().getShipsPlaced() >= gridSize) {
                     player.getGameState().setBoardSubmitted(true);
 
-                    // 🔒 Disable the player's grid AFTER submitting
+                    // Disable the player's grid AFTER submitting
                     //playerGrid.setDisable(true);
 
                     if (submitBoardBtn.getText().equals("Attack")) {
                         int nextPlayerIndex = (playerIndex + 1) % 2;
                         Player nextPlayer = (nextPlayerIndex == 0) ? player : opponent;
+                        player.getGameState().incrementTurnCount();
 
                         if (nextPlayer.getGameState().isComputerPlayer()) {
                             performComputerTurn(nextPlayer, player, primaryStage, scenes);
@@ -116,12 +118,12 @@ public class GameSceneBuilder {
         }
     }
 
-    private static void performComputerTurn(Player computer, Player human, Stage primaryStage, Scene[] scenes) {
-        if (!(human.getBoard() instanceof BoardGUI humanBoard)) return;
+    private static void performComputerTurn(Player computer, Player player, Stage primaryStage, Scene[] scenes) {
+        if (!(player.getBoard() instanceof BoardGUI humanBoard)) return;
 
         FieldGUI[][] fields = humanBoard.getFields();
 
-        // not random yet, attacks from top to bottom, left to right
+        // not random yet, attacks from top left to bottom right
         // TODO: still need to make it random!!!
         for (int row = 0; row < fields.length; row++) {
             for (int col = 0; col < fields[row].length; col++) {
@@ -161,13 +163,7 @@ public class GameSceneBuilder {
 
                 btn.setDisable(false); // make clickable
                 btn.setOnMouseClicked(ev -> {
-                    if (cell.getState() == State.SHIP_NO_HIT) {
-                        cell.setState(State.SHIP_HIT);
-                        btn.setGraphic(AssetLoader.convertToImageView(AssetLoader.HIT_IMG, 40));
-                    } else if (cell.getState() == State.NO_SHIP_NO_HIT) {
-                        cell.setState(State.NO_SHIP_HIT);
-                        btn.setGraphic(AssetLoader.convertToImageView(AssetLoader.MISS_IMG, 40));
-                    }
+                    updateFieldStateAfterAttack(cell, btn);
 
                     disableAllOpponentButtons(fields);
                     onAttackDone.run(); // trigger "End Turn" logic
@@ -192,7 +188,7 @@ public class GameSceneBuilder {
         for (int row = 0; row < gridSize; row++) {
             for (int col = 0; col < gridSize; col++) {
                 FieldGUI cell = (FieldGUI) playerBoard.getFields()[row][col];
-                System.out.println("player " + player.getName() + ", cell state: " + cell.getState());
+                System.out.println("player " + player.getName() + ", cell " + cell.getCoordinate() + "state: " + cell.getState());
             }
         }
 
@@ -215,18 +211,18 @@ public class GameSceneBuilder {
                     System.out.println("ships placed: " + playerState.getShipsPlaced());
                     System.out.println("cell state: " + cell.getState());
 
-                    // ✅ Disallow any interaction if the board is submitted
+                    // Disallow any interaction if the board is submitted
                     if (playerState.isBoardSubmitted()) {
                         return;
                     }
 
-                    // ✅ Allow placing a ship if limit not reached and cell is empty
+                    // Allow placing a ship if limit not reached and cell is empty
                     if (playerState.getShipsPlaced() < gridSize && cell.getState() == State.NO_SHIP_NO_HIT) {
                         cellButton.setGraphic(AssetLoader.convertToImageView(AssetLoader.SHIP_IMG, 40));
                         cell.setState(State.SHIP_NO_HIT);
                         playerState.incrementPlacedShips();
 
-                        // ✅ Allow removing a ship before submission
+                        // Allow removing a ship before submission
                     } else if (cell.getState() == State.SHIP_NO_HIT) {
                         cellButton.setGraphic(AssetLoader.convertToImageView(AssetLoader.SEA_IMG, 40));
                         cell.setState(State.NO_SHIP_NO_HIT);
@@ -238,7 +234,7 @@ public class GameSceneBuilder {
             }
         }
 
-        // ✅ Disable grid only if the current player already submitted
+        // Disable grid only if the current player already submitted
         if (player.getGameState().isBoardSubmitted()) {
             playerGrid.setDisable(true);
         }
@@ -246,7 +242,7 @@ public class GameSceneBuilder {
         return playerGrid;
     }
 
-    private static GridPane createOpponentGrid(Player opponent, double gridSize, PlayerState playerState, FieldGUI[] selectedAttackCell) {
+    private static GridPane createOpponentGrid(Player opponent, double gridSize, Player player, FieldGUI[] selectedAttackCell, ArrayList<FieldGUI> selectedAttackCells) {
         GridPane oppGrid = new GridPane();
         oppGrid.setHgap(2);
         oppGrid.setVgap(2);
@@ -255,7 +251,7 @@ public class GameSceneBuilder {
             for (int col = 0; col < gridSize; col++) {
                 FieldGUI oppCell = (FieldGUI) opponent.getBoard().getFields()[row][col];
                 FieldGUI attackCell = new FieldGUI(50, new Point(0, 0), new Point(col, row));
-                Button attackCellButton = getAttackButton(playerState, attackCell, oppCell, selectedAttackCell);
+                Button attackCellButton = getAttackButton(player, attackCell, opponent, oppCell, selectedAttackCell, selectedAttackCells);
 
                 oppGrid.add(attackCellButton, col, row);
             }
@@ -263,41 +259,61 @@ public class GameSceneBuilder {
         return oppGrid;
     }
 
-    private static Button getAttackButton(PlayerState playerState, FieldGUI attackCell, FieldGUI oppCell, FieldGUI[] selectedAttackCell) {
+    private static Button getAttackButton(Player player, FieldGUI attackCell, Player opponent, FieldGUI oppCell, FieldGUI[] selectedAttackCell, ArrayList<FieldGUI> selectedAttackCells) {
         Button attackCellButton = attackCell.getButton();
 
         AtomicBoolean isAttackSubmitted = new AtomicBoolean(false);
 
         attackCellButton.setOnMouseClicked(e -> {
-            if (!playerState.isBoardSubmitted()) return;
+            for (int row = 0; row < opponent.getBoard().getFields().length; row++) {
+                for (int col = 0; col <  opponent.getBoard().getFields().length; col++) {
+                    FieldGUI cell = (FieldGUI) opponent.getBoard().getFields()[row][col];
+                    System.out.println("player " + opponent.getName() + ", cell " + cell.getCoordinate() + "state: " + cell.getState());
+                }
+            }
+
+            if (oppCell.getState() == State.SHIP_NO_HIT)
+                System.out.println("hit shit");
+
+
+            System.out.println(selectedAttackCells);
+            if (!player.getGameState().isBoardSubmitted()) return;
 
             // If this cell is already selected, deselect it
-            if (selectedAttackCell[0] == attackCell) {
+            if (selectedAttackCells.contains(attackCell)) {
                 selectedAttackCell[0] = null;
+                selectedAttackCells.remove(attackCell);
                 attackCell.setLinkedTargetCell(null);
                 attackCellButton.setGraphic(AssetLoader.convertToImageView(AssetLoader.SEA_IMG, 40)); // revert image
                 return;
             }
 
             // If another cell is already selected, ignore this click
-            if (selectedAttackCell[0] != null) return;
+            System.out.println("no. selected cells %d; turn count: %d".formatted(selectedAttackCells.size(), player.getGameState().getTurnCount()));
+            if (selectedAttackCells.size() == player.getGameState().getTurnCount()) return;
 
             // Select this cell
             selectedAttackCell[0] = attackCell;
+            selectedAttackCells.add(attackCell);
             attackCell.setLinkedTargetCell(oppCell);
             attackCellButton.setGraphic(AssetLoader.convertToImageView(AssetLoader.ATTACK_IMG, 40)); // show attack image
             isAttackSubmitted.set(true);
 
-            if (isAttackSubmitted.get()) {
-                if (attackCell.getState() == State.SHIP_HIT) {
-                    attackCellButton.setGraphic(AssetLoader.convertToImageView(AssetLoader.HIT_IMG, 40));
-                } else {
-                    attackCellButton.setGraphic(AssetLoader.convertToImageView(AssetLoader.MISS_IMG, 40));
-                }
-            }
+            if (isAttackSubmitted.get())
+                updateFieldStateAfterAttack(oppCell, attackCellButton);
         });
 
         return attackCellButton;
+    }
+
+    private static void updateFieldStateAfterAttack(FieldGUI oppCell, Button attackCellButton) {
+        if (oppCell.getState() == State.SHIP_NO_HIT) {
+            oppCell.setState(State.SHIP_HIT);
+            attackCellButton.setGraphic(AssetLoader.convertToImageView(AssetLoader.HIT_IMG, 40));
+        } else if (oppCell.getState() == State.NO_SHIP_NO_HIT){
+            oppCell.setState(State.NO_SHIP_HIT);
+            attackCellButton.setGraphic(AssetLoader.convertToImageView(AssetLoader.MISS_IMG, 40));
+        }
     }
 
     private static void setCellStateAndImage(FieldGUI oppCell, FieldGUI attackCell, Image img) {
