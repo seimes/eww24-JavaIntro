@@ -96,6 +96,7 @@ public class GameSceneBuilder {
                 if (player.getGameState().getShipsPlaced() >= gridSize) {
                     player.getGameState().setBoardSubmitted(true);
 
+                    updateOppGridGraphics(selectedAttackCells);
                     // Disable the player's grid AFTER submitting
                     //playerGrid.setDisable(true);
 
@@ -158,9 +159,9 @@ public class GameSceneBuilder {
 
     private static void updateOppGridGraphics(ArrayList<FieldGUI> selectedAttackCells) {
         for (FieldGUI cell : selectedAttackCells) {
-            if (cell.getState() == State.SHIP_HIT) {
+            if (cell.getLinkedTargetCell().getState() == State.SHIP_HIT) {
                 cell.getButton().setGraphic(AssetLoader.convertToImageView(AssetLoader.HIT_IMG, 40));
-            } else if (cell.getState() == State.NO_SHIP_HIT) {
+            } else if (cell.getLinkedTargetCell().getState() == State.NO_SHIP_HIT) {
                 cell.getButton().setGraphic(AssetLoader.convertToImageView(AssetLoader.MISS_IMG, 40));
             }
         }
@@ -270,6 +271,7 @@ public class GameSceneBuilder {
                 oppGrid.add(attackCellButton, col, row);
             }
         }
+
         return oppGrid;
     }
 
@@ -279,7 +281,7 @@ public class GameSceneBuilder {
 
         attackCellButton.setOnMouseClicked(e -> {
             for (int row = 0; row < opponent.getBoard().getFields().length; row++) {
-                for (int col = 0; col <  opponent.getBoard().getFields().length; col++) {
+                for (int col = 0; col < opponent.getBoard().getFields().length; col++) {
                     FieldGUI cell = (FieldGUI) opponent.getBoard().getFields()[row][col];
                     System.out.println("player " + opponent.getName() + ", cell " + cell.getCoordinate() + "state: " + cell.getState());
                 }
@@ -323,10 +325,11 @@ public class GameSceneBuilder {
             oppCell.setState(State.SHIP_HIT);
             player.getGameState().incrementScore();
             playerScore.setText("Your Score: " + player.getGameState().getScore());
-        } else if (oppCell.getState() == State.NO_SHIP_NO_HIT){
+        } else if (oppCell.getState() == State.NO_SHIP_NO_HIT) {
             oppCell.setState(State.NO_SHIP_HIT);
         }
     }
+
 
     private static void setCellStateAndImage(FieldGUI oppCell, FieldGUI attackCell, Image img) {
         oppCell.setState(State.SHIP_HIT);
