@@ -156,7 +156,15 @@ public class GameSceneBuilder {
         }
     }
 
-
+    private static void updateOppGridGraphics(ArrayList<FieldGUI> selectedAttackCells) {
+        for (FieldGUI cell : selectedAttackCells) {
+            if (cell.getState() == State.SHIP_HIT) {
+                cell.getButton().setGraphic(AssetLoader.convertToImageView(AssetLoader.HIT_IMG, 40));
+            } else if (cell.getState() == State.NO_SHIP_HIT) {
+                cell.getButton().setGraphic(AssetLoader.convertToImageView(AssetLoader.MISS_IMG, 40));
+            }
+        }
+    }
     /*private static void allowOneAttack(BoardLike<? extends Field> oppBoard, Button submitBtn, Runnable onAttackDone) {
         if (!(oppBoard instanceof BoardGUI boardGUI)) return;
 
@@ -267,11 +275,9 @@ public class GameSceneBuilder {
 
     private static Button getAttackButton(Player player, FieldGUI attackCell, Player opponent, FieldGUI oppCell, FieldGUI[] selectedAttackCell, ArrayList<FieldGUI> selectedAttackCells, Text playerScore) {
         Button attackCellButton = attackCell.getButton();
-
         AtomicBoolean isAttackSubmitted = new AtomicBoolean(false);
 
         attackCellButton.setOnMouseClicked(e -> {
-            System.out.println("scoreee: " + player.getGameState().getScore());
             for (int row = 0; row < opponent.getBoard().getFields().length; row++) {
                 for (int col = 0; col <  opponent.getBoard().getFields().length; col++) {
                     FieldGUI cell = (FieldGUI) opponent.getBoard().getFields()[row][col];
@@ -281,7 +287,6 @@ public class GameSceneBuilder {
 
             if (oppCell.getState() == State.SHIP_NO_HIT)
                 System.out.println("hit shit");
-
 
             System.out.println(selectedAttackCells);
             if (!player.getGameState().isBoardSubmitted()) return;
@@ -318,10 +323,8 @@ public class GameSceneBuilder {
             oppCell.setState(State.SHIP_HIT);
             player.getGameState().incrementScore();
             playerScore.setText("Your Score: " + player.getGameState().getScore());
-            attackCellButton.setGraphic(AssetLoader.convertToImageView(AssetLoader.HIT_IMG, 40));
         } else if (oppCell.getState() == State.NO_SHIP_NO_HIT){
             oppCell.setState(State.NO_SHIP_HIT);
-            attackCellButton.setGraphic(AssetLoader.convertToImageView(AssetLoader.MISS_IMG, 40));
         }
     }
 
